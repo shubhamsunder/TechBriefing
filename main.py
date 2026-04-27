@@ -67,8 +67,8 @@ def summarize_with_gemini(raw_data, is_weekly):
         return None
 
     genai.configure(api_key=api_key)
-    # Using the most stable universally supported model name
-    model = genai.GenerativeModel('gemini-pro')
+    # Using Gemini 2.5 Pro as requested
+    model = genai.GenerativeModel('gemini-2.5-pro')
     
     period = "Weekly" if is_weekly else "Daily"
     
