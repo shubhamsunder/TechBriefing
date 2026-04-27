@@ -67,8 +67,8 @@ def summarize_with_gemini(raw_data, is_weekly):
         return None
 
     genai.configure(api_key=api_key)
-    # Using Gemini 1.5 Flash as it is fast and suitable for summarization
-    model = genai.GenerativeModel('gemini-1.5-flash-latest')
+    # Using the most stable universally supported model name
+    model = genai.GenerativeModel('gemini-pro')
     
     period = "Weekly" if is_weekly else "Daily"
     
