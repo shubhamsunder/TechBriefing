@@ -7,6 +7,8 @@ from datetime import datetime, timedelta, timezone
 from jinja2 import Environment, FileSystemLoader
 import google.generativeai as genai
 from bs4 import BeautifulSoup
+import time
+import json
 
 # Define RSS feeds to pull from
 FEEDS = {
@@ -72,50 +74,63 @@ def summarize_with_gemini(raw_data, is_weekly):
     
     period = "Weekly" if is_weekly else "Daily"
     
-    prompt = f"""
-You are an expert AI assistant curating a {period} newsletter for a Supply-side Product Manager at Zoomcar (an Indian mobility marketplace).
-Your goal is to review the following raw news items scraped from RSS feeds and extract the most relevant, high-impact news.
+    final_parsed_data = {
+        "ai_updates": [],
+        "global_marketplaces": [],
+        "indian_startups": []
+    }
+    
+    # Process each category separately to stagger requests and avoid large payload/rate limits
+    categories = [
+        ("AI_Tech", "ai_updates", "Top 5 AI Technology & PM updates"),
+        ("Global_Marketplaces", "global_marketplaces", "Top 5 Global Marketplace updates (Mobility/Travel like Turo, Airbnb, Uber)"),
+        ("Indian_Startups", "indian_startups", "Top 5 Indian Startups & Marketplaces updates")
+    ]
+    
+    for raw_key, json_key, focus in categories:
+        if not raw_data.get(raw_key):
+            continue
+            
+        print(f"Summarizing category: {raw_key}...")
+        prompt = f"""
+You are an expert AI assistant curating a {period} newsletter for a Supply-side Product Manager at Zoomcar.
+Your goal is to review the following raw news items and extract the most relevant, high-impact news.
 
-Filter out noise and select:
-1. Top 5 AI Technology & PM updates.
-2. Top 5 Global Marketplace updates (especially Mobility/Travel like Turo, Airbnb, Uber, etc.).
-3. Top 5 Indian Startups & Marketplaces updates.
+Filter out noise and select: {focus}.
+For each selected item, write a crisp, 2-sentence summary highlighting WHY a PM should care. Include the original link.
 
-For each selected item, write a crisp, 2-sentence summary highlighting WHY a PM should care or what the strategic implication is.
-Include the original link.
-
-Format the output EXACTLY as a JSON string with the following structure (no markdown code blocks, just raw JSON):
-{{
-  "ai_updates": [
-    {{"title": "...", "summary": "...", "link": "..."}}
-  ],
-  "global_marketplaces": [
-    {{"title": "...", "summary": "...", "link": "..."}}
-  ],
-  "indian_startups": [
-    {{"title": "...", "summary": "...", "link": "..."}}
-  ]
-}}
+Format the output EXACTLY as a JSON array of objects with keys: "title", "summary", "link".
+Example:
+[
+  {{"title": "...", "summary": "...", "link": "..."}}
+]
 
 Raw Data:
-{raw_data}
+{raw_data[raw_key]}
 """
-    
-    try:
-        response = model.generate_content(prompt)
-        text_response = response.text
-        # Strip any markdown json block formatting if present
-        if text_response.startswith("```json"):
-            text_response = text_response[7:-3].strip()
-        elif text_response.startswith("```"):
-            text_response = text_response[3:-3].strip()
+        try:
+            response = model.generate_content(prompt)
+            text_response = response.text
+            # Strip any markdown json block formatting if present
+            if text_response.startswith("```json"):
+                text_response = text_response[7:-3].strip()
+            elif text_response.startswith("```"):
+                text_response = text_response[3:-3].strip()
+                
+            parsed = json.loads(text_response)
+            if isinstance(parsed, list):
+                final_parsed_data[json_key] = parsed
+            elif isinstance(parsed, dict) and json_key in parsed:
+                final_parsed_data[json_key] = parsed[json_key]
+                
+        except Exception as e:
+            print(f"Error during summarization for {raw_key}: {e}")
             
-        import json
-        parsed_data = json.loads(text_response)
-        return parsed_data
-    except Exception as e:
-        print(f"Error during summarization: {e}")
-        return None
+        # Stagger the requests by 15 seconds to strictly avoid the rate limits
+        print("Waiting 15 seconds before the next API call to respect rate limits...")
+        time.sleep(15)
+
+    return final_parsed_data
 
 def send_email(html_content, recipient_email, is_weekly):
     sender_email = os.getenv("SMTP_EMAIL")
