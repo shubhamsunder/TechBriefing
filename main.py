@@ -142,7 +142,7 @@ def send_email(html_content, recipient_email, is_weekly):
         
     msg = EmailMessage()
     period = "Weekly" if is_weekly else "Daily"
-    msg['Subject'] = f"Your {period} AI & Marketplace Brief ☕"
+    msg['Subject'] = f"Shubham's Agent - {'Weekly' if is_weekly else 'Daily'} tech brief"
     msg['From'] = f"Zoomcar Brief <{sender_email}>"
     msg['To'] = recipient_email
     
