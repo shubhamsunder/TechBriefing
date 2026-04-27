@@ -15,7 +15,11 @@ FEEDS = {
     "AI_Tech": [
         "https://techcrunch.com/category/artificial-intelligence/feed/",
         "https://www.artificialintelligence-news.com/feed/",
-        "https://news.google.com/rss/search?q=AI+product+management+OR+LLM+updates&hl=en-US&gl=US&ceid=US:en"
+        "https://news.google.com/rss/search?q=AI+product+management+OR+LLM+updates&hl=en-US&gl=US&ceid=US:en",
+        "https://bensbites.beehiiv.com/rss",
+        "https://tldr.tech/ai/rss",
+        "https://blog.google/technology/ai/rss/",
+        "https://openai.com/blog/rss.xml"
     ],
     "Global_Marketplaces": [
         "https://skift.com/feed/",
@@ -142,8 +146,8 @@ def send_email(html_content, recipient_email, is_weekly):
         
     msg = EmailMessage()
     period = "Weekly" if is_weekly else "Daily"
-    msg['Subject'] = f"Shubham's Agent - {'Weekly' if is_weekly else 'Daily'} tech brief"
-    msg['From'] = f"Zoomcar Brief <{sender_email}>"
+    msg['Subject'] = f"Your {period} AI & Marketplace Brief ☕"
+    msg['From'] = f"Shubham's News AI Agent <{sender_email}>"
     msg['To'] = recipient_email
     
     msg.set_content("Please enable HTML to view this email.")
