@@ -6,7 +6,7 @@ An automated pipeline that aggregates, summarizes, and emails the latest news ab
 1. **Aggregates:** Scrapes RSS feeds and Google News search queries.
 2. **Summarizes:** Uses the Gemini 1.5 Flash API to parse raw text, filter the noise, and generate crisp 2-sentence PM-focused summaries.
 3. **Emails:** Injects the data into a responsive HTML email and sends it via SMTP.
-4. **Automates:** Hosted on GitHub Actions to run Daily (Mon-Sat 8:00 AM IST) and Weekly (Sun 8:00 AM IST).
+4. **Automates:** Hosted on GitHub Actions to run Daily (Mon-Sat 6:00 AM IST) and Weekly (Sun 6:00 AM IST).
 
 ## Setup Instructions
 
@@ -33,7 +33,7 @@ You requested a random account. Since I cannot create an account automatically d
     - `RECIPIENT_EMAIL`: Your personal or work email address where you want to receive the brief.
 
 ### 4. Running it
-Once the secrets are in place, the GitHub actions will run automatically at 8:00 AM IST. 
+Once the secrets are in place, the GitHub actions will run automatically at 6:00 AM IST. 
 You can also trigger them manually by going to the "Actions" tab in your repository, selecting the workflow, and clicking "Run workflow".
 
 ## Local Testing

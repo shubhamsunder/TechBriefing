@@ -2,8 +2,8 @@ name: Daily Brief Generator
 
 on:
   schedule:
-    # Runs at 2:30 AM UTC (8:00 AM IST) Monday through Saturday
-    - cron: '30 2 * * 1-6'
+    # Runs at 12:30 AM UTC (6:00 AM IST) Monday through Saturday
+    - cron: '30 0 * * 1-6'
   workflow_dispatch: {}
 
 jobs:
