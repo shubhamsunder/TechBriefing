@@ -101,7 +101,7 @@ You are an expert AI assistant curating a {period} newsletter for a Supply-side 
 Your goal is to review the following raw news items and extract the most relevant, high-impact news.
 
 Filter out noise and select: {focus}.
-For each selected item, write a crisp, 2-sentence summary highlighting WHY a PM should care. Include the original link.
+For each selected item, write a clear, 2-3 sentence summary describing exactly what the news or update is about. Make the actual news very clear and easy to understand. Include the original link.
 
 Format the output EXACTLY as a JSON array of objects with keys: "title", "summary", "link".
 Example:
