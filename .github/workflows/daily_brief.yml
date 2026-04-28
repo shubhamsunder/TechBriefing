@@ -1,3 +1,4 @@
+# Nudge to re-sync GitHub scheduler
 name: Daily Brief Generator
 
 on:
